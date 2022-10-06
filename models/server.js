@@ -3,6 +3,7 @@ import cors from "cors";
 import { router } from "../routes/users.js";
 import path from "path";
 import { fileURLToPath, URL } from 'url';
+import { dbConection } from "../database/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,11 +14,18 @@ class Server {
         this._port = process.env.PORT;
         this.usuariosPath = '/api/usuarios'
 
+        // Conectar DB
+        this.conectarDB();
+
         // Middlewares;
         this.middlewares();
         
         // Rutas;
         this.routes();
+    }
+
+    async conectarDB() {
+        await dbConection();
     }
 
     middlewares() {
@@ -35,7 +43,7 @@ class Server {
         this.app.use(this.usuariosPath, router);
 
         this.app.get('*', (req, res) => {
-            res.sendFile(path.join(__dirname, '/public', '404.html'));
+            res.sendFile(path.join(__dirname, '../public', '404.html'));
         });
     }
 
